@@ -1,3 +1,4 @@
 bottle
 dataset
-nosetests
+nose
+webtest
