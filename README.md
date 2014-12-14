@@ -1,6 +1,8 @@
 bottle-auth
 ===========
 
+
+
 First install requirements:
 
     pip install -r pip-requirements.txt
@@ -13,7 +15,7 @@ To run web application server:
 
 To test application:
 
-    nose tests/ -v
+    tox
 
 
 Description: 

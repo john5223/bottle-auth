@@ -1,4 +1,4 @@
 bottle
 dataset
-nose
 webtest
+tox
