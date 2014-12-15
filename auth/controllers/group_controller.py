@@ -32,9 +32,17 @@ def get_group(db, group_name):
     if not rows:
         return error(404, {'error': 'Not a valid group'})
 
-    userids = ["'%s'" % x['userid'] for x in rows if x['userid']]
-    users = db.query("SELECT * FROM users WHERE userid IN (%s) " % ','.join(userids))
-    ret = {group_name: list(users) }
+    userids = [x['userid'] for x in rows if x['userid']]
+    if not userids:
+        return {group_name: []}
+
+    params = {}
+    for i, userid in enumerate(userids,1):
+        params['userid_' + str(i)] = str(userid)
+    where_clause = 'userid IN(:' + ",:".join(params.keys()) + ')' # b/c sqlalchemy can't use a list!?
+    q = "SELECT * FROM users WHERE " + where_clause
+    users = db.executable.execute(q, params).fetchall()
+    ret = {group_name: [dict(x.items()) for x in users] }
     return ret
 
 

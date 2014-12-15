@@ -38,7 +38,7 @@ def delete_user(db, userid):
 
 
 @route('/users/<userid>', method=['POST', 'PUT'])
-def create__update_user(db, userid):
+def create_update_user(db, userid):
     data = request.json
     data_keys = data.keys()
     required_fields = ['first_name', 'last_name', 'userid', 'groups']
@@ -71,10 +71,13 @@ def create__update_user(db, userid):
 
     if request.method == 'PUT':
         #get rid of any old groups for this user
-        q = '''DELETE FROM groups 
-                WHERE userid='{userid}'
-                            AND name not in ({group_names})
-              '''.format(userid=userid, group_names=','.join(["'%s'" % x for x in groups]))
-        db.query(q)
+        params = {}
+        for counter, group in enumerate(groups,1):
+            params["group_name" + str(counter)] = group
+            counter += 1
+        where_clause = 'name NOT IN(:' + ",:".join(params.keys()) + ')' # b/c sqlalchemy can't use a list!?
+        params['userid'] = userid
+        q = '''DELETE FROM groups WHERE userid=:userid AND ''' + where_clause
+        db.executable.execute(q, params)
 
     return {'status': 200, 'user': get_user(db, userid)}

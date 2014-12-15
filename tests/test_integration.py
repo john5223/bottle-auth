@@ -8,7 +8,7 @@ from auth import simpleauth
 
 app = TestApp(simpleauth.app)
 
-def test_users():
+def test_user_integration():
     headers = [('Content-type', 'application/json')]
     payload = { "first_name": "Joe",
 	    "last_name": "Smith",
@@ -55,7 +55,7 @@ def test_users():
     assert delete_user.status == '200 OK'
 
 
-def test_groups():
+def test_groups_integration():
     headers = [('Content-type', 'application/json')]
     payload = { "first_name": "Joe",
         "last_name": "Smith",
